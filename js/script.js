@@ -6,7 +6,9 @@ const weatherIcon = document.querySelector('.weather-icon')
 const temperature = document.querySelector('.temperature')
 const weatherDescription = document.querySelector('.weather-description')
 const city = document.querySelector('.city')
-
+const body = document.querySelector('body')
+const slidePrev = document.querySelector('.slide-prev')
+const slideNext = document.querySelector('.slide-next')
 
 let dateValue = new Date()
 
@@ -61,7 +63,7 @@ function getTimeOfDay () {
     } else if (hours >= 6 && hours < 12) {
         timeOfDay = "morning"
     } else if (hours >= 12 && hours < 18) {
-        timeOfDay = "day"
+        timeOfDay = "afternoon"
     } else {
         timeOfDay = "evening"
     }   
@@ -84,8 +86,44 @@ function getLocalStorage() {
     userName.value = localStorage.getItem('name')
   }
 }
-
 window.addEventListener('load', getLocalStorage)
 
-//-----------------------------------------------------------
+//--------------------slider----------------------------------------
 
+let randomNum
+
+let getRandomNum = () => randomNum = Math.floor(Math.random() * 20 + 1)
+getRandomNum()
+
+function setBg() { 
+    let bgNum = String(randomNum).padStart(2, '0')
+    const img = new Image();
+    img.src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
+    let bgUrl = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
+    img.onload = () => {      
+        body.style.backgroundImage = `url("${bgUrl}")`
+      }
+}
+setBg()
+
+function getSlideNext() {
+    randomNum +=1
+    if (randomNum > 20) {
+        randomNum = 1
+    }
+    setBg()
+}
+
+function getSlidePrev() {
+    randomNum = randomNum - 1
+    if (randomNum < 1) {
+        randomNum = 20
+    }
+    console.log(randomNum)
+    setBg()
+}
+
+slidePrev.addEventListener('click', getSlidePrev)
+slideNext.addEventListener('click', getSlideNext)
+
+//------------------------------------------------------------------
