@@ -11,6 +11,9 @@ const city = document.querySelector('.city')
 const body = document.querySelector('body')
 const slidePrev = document.querySelector('.slide-prev')
 const slideNext = document.querySelector('.slide-next')
+const quote = document.querySelector('.quote')
+const author = document.querySelector('.author')
+const changeQuote = document.querySelector('.change-quote')
 
 let dateValue = new Date()
 
@@ -43,6 +46,23 @@ async function getWeather() {
 getWeather()
 city.addEventListener('change', getWeather)
 
+//---------------------Quote of day--------------------------------
+
+let randomQuoteNum
+async function getQuotes() {  
+    const quotes = 'data.json'
+    const res = await fetch(quotes)
+    const data = await res.json()
+
+    let getRandomQuoteNum = () => randomQuoteNum = Math.floor(Math.random() * 100)
+    getRandomQuoteNum()
+
+    quote.textContent = data[randomQuoteNum]["text"]
+    author.textContent = data[randomQuoteNum]["author"]
+  }
+  getQuotes()
+
+changeQuote.addEventListener ('click', getQuotes)
 //----------------------Clocks-----------------------
 
 function showTime() {
@@ -124,7 +144,6 @@ function getSlidePrev() {
     if (randomNum < 1) {
         randomNum = 20
     }
-    console.log(randomNum)
     setBg()
 }
 
@@ -132,3 +151,5 @@ slidePrev.addEventListener('click', getSlidePrev)
 slideNext.addEventListener('click', getSlideNext)
 
 //------------------------------------------------------------------
+
+
