@@ -1,3 +1,5 @@
+import playList from './playList.js'
+
 const time = document.querySelector('time')
 const date = document.querySelector('date')
 const greeting = document.querySelector('.greeting')
@@ -14,7 +16,12 @@ const slideNext = document.querySelector('.slide-next')
 const quote = document.querySelector('.quote')
 const author = document.querySelector('.author')
 const changeQuote = document.querySelector('.change-quote')
+const playBtn = document.querySelector('.play')
+const playPrevBtn = document.querySelector('.play-prev')
+const playNextBtn = document.querySelector('.play-next')
+const playListContainer = document.querySelector('.play-list')
 
+let isPlay = false
 let dateValue = new Date()
 
 //---------------------weather-----------------------------
@@ -57,12 +64,13 @@ async function getQuotes() {
     let getRandomQuoteNum = () => randomQuoteNum = Math.floor(Math.random() * 100)
     getRandomQuoteNum()
 
-    quote.textContent = data[randomQuoteNum]["text"]
+    quote.textContent = `"${data[randomQuoteNum]["text"]}"`
     author.textContent = data[randomQuoteNum]["author"]
   }
   getQuotes()
 
 changeQuote.addEventListener ('click', getQuotes)
+
 //----------------------Clocks-----------------------
 
 function showTime() {
@@ -150,6 +158,65 @@ function getSlidePrev() {
 slidePrev.addEventListener('click', getSlidePrev)
 slideNext.addEventListener('click', getSlideNext)
 
-//------------------------------------------------------------------
+//-------------------Audio player-----------------------------------------------
 
+const audio = new Audio()
+let playNum = 0
 
+function playAudio() {
+  audio.src = playList[playNum].src
+  audio.currentTime = 0
+  if(!isPlay) {
+    audio.play()
+    isPlay = true
+  } else if (isPlay) 
+  {
+    audio.pause()
+    isPlay = false
+  }
+
+}
+
+function togglePlayIcon() {
+    if(!isPlay) {
+        playBtn.classList.remove('pause')
+      } else {
+        playBtn.classList.add('pause')
+      }
+}
+
+playBtn.addEventListener('click', playAudio)
+playBtn.addEventListener('click', togglePlayIcon)
+
+function playNext() {
+    playNum +=1
+    if (playNum > playList.length - 1) {
+        playNum = 0
+    }
+    isPlay = false
+    playAudio()
+    togglePlayIcon()
+}
+
+function playPrev() {
+    playNum = playNum - 1
+    if (playNum < 0) {
+        playNum = playList.length - 1
+    }
+    isPlay = false
+    playAudio()
+    togglePlayIcon()
+}
+
+playNextBtn.addEventListener('click', playNext)
+playPrevBtn.addEventListener('click', playPrev)
+
+for (let i = 0; i < playList.length; i++) {
+    const li = document.createElement('li')
+    li.classList.add('play-item')
+    li.textContent = playList[i].title
+    playListContainer.append(li)
+}
+
+/* const playItems = document.querySelectorAll('.play-item')
+playItems[playNum].classList.add('.item-active') */
