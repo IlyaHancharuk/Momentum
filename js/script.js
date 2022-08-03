@@ -5,6 +5,8 @@ const userName = document.querySelector('.name')
 const weatherIcon = document.querySelector('.weather-icon')
 const temperature = document.querySelector('.temperature')
 const weatherDescription = document.querySelector('.weather-description')
+const wind = document.querySelector('.wind')
+const humidity = document.querySelector('.humidity')
 const city = document.querySelector('.city')
 const body = document.querySelector('body')
 const slidePrev = document.querySelector('.slide-prev')
@@ -18,6 +20,7 @@ city.value = 'Minsk'
 let owfClass
 
 async function getWeather() {  
+    weatherIcon.className = 'weather-icon owf'
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=91e0c5938a3b45ed4154661576da4ecf&units=metric`
     const res = await fetch(url)
     const data = await res.json()
@@ -30,8 +33,10 @@ async function getWeather() {
     } else {
         owfClass = `owf-${data.weather[0].id}`
         weatherIcon.classList.add(owfClass)
-        temperature.textContent = `${data.main.temp}°C`
+        temperature.textContent = `${Math.round(data.main.temp)}°C`
         weatherDescription.textContent = data.weather[0].description
+        wind.textContent = `Wind speed: ${Math.round(data.wind.speed)} m/s`
+        humidity.textContent = `Humidity: ${data.main.humidity}%`
     }
 }
 
