@@ -2,8 +2,10 @@ import playList from './playList.js'
 
 const time = document.querySelector('time')
 const date = document.querySelector('date')
+const greetingContainer = document.querySelector('.greeting-container')
 const greeting = document.querySelector('.greeting')
 const userName = document.querySelector('.name')
+const weather = document.querySelector('.weather')
 const weatherIcon = document.querySelector('.weather-icon')
 const temperature = document.querySelector('.temperature')
 const weatherDescription = document.querySelector('.weather-description')
@@ -16,6 +18,7 @@ const slideNext = document.querySelector('.slide-next')
 const quote = document.querySelector('.quote')
 const author = document.querySelector('.author')
 const changeQuote = document.querySelector('.change-quote')
+const player = document.querySelector('.player')
 const playBtn = document.querySelector('.play')
 const playPrevBtn = document.querySelector('.play-prev')
 const playNextBtn = document.querySelector('.play-next')
@@ -72,14 +75,15 @@ async function getQuotes() {
 changeQuote.addEventListener ('click', getQuotes)
 
 //----------------------Clocks-----------------------
-
+let locales
 function showTime() {
     dateValue = new Date()
+    locales = 'en-US'
     let optionsForTime = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false}    
     let optionsForDate = { weekday: 'long', month: 'long', day: 'numeric'}
     
-    time.innerHTML = new Intl.DateTimeFormat('en-US', optionsForTime).format(dateValue)
-    date.innerHTML = new Intl.DateTimeFormat('en-US', optionsForDate).format(dateValue)
+    time.innerHTML = dateValue.toLocaleString(locales, optionsForTime)
+    date.innerHTML = dateValue.toLocaleString(locales, optionsForDate)
 
     setTimeout(showTime, 1000) 
 }
@@ -220,3 +224,75 @@ for (let i = 0; i < playList.length; i++) {
 
 /* const playItems = document.querySelectorAll('.play-item')
 playItems[playNum].classList.add('.item-active') */
+
+//-----------------settings menu-----------------------------------
+
+const settingsBtn = document.querySelector('.settings-icon')
+const settingsContainer = document.querySelector('.settings-container')
+const settingsMenu = document.querySelector('.settings-menu')
+
+
+settingsBtn.addEventListener('click', function() {
+    settingsContainer.classList.toggle('settings-container-active')
+    settingsBtn.classList.toggle('settings-icon-active')
+    if(!settingsMenu.classList.contains('settings-menu-active')) {
+        setTimeout(function() {
+            settingsMenu.classList.add('settings-menu-active')
+        }, 400)
+    } else {
+        settingsMenu.classList.remove('settings-menu-active')
+    } 
+})
+
+//---------show blocks----------------------------
+function getShow (block) {
+    if (block.classList.contains('hidden')) {
+        block.classList.remove('hidden')
+        setTimeout(function () {
+            block.classList.remove('visuallyhidden')
+        }, 20)
+      } else {
+        block.classList.add('visuallyhidden');   
+        block.addEventListener('transitionend', function() {
+            block.classList.add('hidden')
+        }, {
+          capture: false,
+          once: true,
+          passive: false
+        })
+      }
+}
+
+document.getElementById('show-player-btn').addEventListener('click', function() {
+    this.classList.toggle('switch-on')
+    getShow(player)
+    }, false)
+
+document.getElementById('show-weather-btn').addEventListener('click', function() {
+    this.classList.toggle('switch-on')
+    getShow(weather)
+    }, false)
+
+document.getElementById('show-greeting-btn').addEventListener('click', function() {
+    this.classList.toggle('switch-on')
+    getShow(greetingContainer)
+    }, false)
+
+
+    
+document.getElementById('show-clocks-btn').addEventListener('click', function() {
+    this.classList.toggle('switch-on')
+    getShow(time)
+}, false)
+
+document.getElementById('show-date-btn').addEventListener('click', function() {
+    this.classList.toggle('switch-on')
+    getShow(date)
+})
+
+document.getElementById('show-quote-btn').addEventListener('click', function() {
+    this.classList.toggle('switch-on')
+    getShow(quote)
+    getShow(author)
+    getShow(changeQuote)
+})

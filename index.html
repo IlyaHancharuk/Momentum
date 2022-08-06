@@ -44,7 +44,49 @@
   </main>
   <footer class="footer">
     <button class="change-quote"></button>
-    <div>
+    <button class="settings-icon"></button>
+    <div class="settings-container">
+      <ul class="settings-menu">
+        <li>
+          <div>Language</div>
+          <div class="lang-toggler">
+            <div class="lang-toggler-item item-1">
+                <input id="langEn" type="radio" name="radio" value="En" checked>
+                <label for="langEn">EN</label>
+            </div>
+            <div class="lang-toggler-item item-2">
+                <input id="langRu" type="radio" name="radio" value="Ru">
+                <label for="langRu">RU</label>
+            </div>
+        </div>
+        </li>
+        <li>
+          <div>Player</div>
+          <div class="switch-btn switch-on" id="show-player-btn"></div>
+        </li>
+        <li>
+          <div>Weather</div>
+          <div class="switch-btn switch-on" id="show-weather-btn"></div>
+        </li>
+        <li>
+          <div>Clocks</div>
+          <div class="switch-btn switch-on" id="show-clocks-btn"></div>
+        </li>
+        <li>
+          <div>Date</div>
+          <div class="switch-btn switch-on" id="show-date-btn"></div>
+        </li>
+        <li>
+          <div>Greeting</div>
+          <div class="switch-btn switch-on" id="show-greeting-btn"></div>
+        </li>
+        <li>
+          <div>Quote</div>
+          <div class="switch-btn switch-on" id="show-quote-btn"></div>
+        </li>
+      </ul>
+    </div>
+    <div class="quote-container">
       <div class="quote"></div>
       <div class="author"></div>
     </div>
