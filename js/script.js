@@ -23,44 +23,52 @@ const playBtn = document.querySelector('.play')
 const playPrevBtn = document.querySelector('.play-prev')
 const playNextBtn = document.querySelector('.play-next')
 const playListContainer = document.querySelector('.play-list')
+const langEnBtn = document.querySelector('.item-en')
+const langRuBtn = document.querySelector('.item-ru')
+const langEn = document.getElementById('langEn')
+const langRu = document.getElementById('langRu')
+const settingsBtn = document.querySelector('.settings-icon')
+const settingsContainer = document.querySelector('.settings-container')
+const settingsMenu = document.querySelector('.settings-menu')
 
 let isPlay = false
+let language = 'en'
+
 let dateValue = new Date()
 
-//---------------------weather-----------------------------
+/* const state = {
+    : '',
+    ity: 'Minsk',
+    userName: '',
+} */
 
-city.value = 'Minsk'
-let owfClass
 
-async function getWeather() {  
-    weatherIcon.className = 'weather-icon owf'
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=91e0c5938a3b45ed4154661576da4ecf&units=metric`
-    const res = await fetch(url)
-    const data = await res.json()
-    
-    if (res.status === 404) {
-        
-        weatherIcon.classList.remove(owfClass)
-        temperature.textContent = `Error! City ${city.value} is not found.`
-        weatherDescription.textContent = ''
-    } else {
-        owfClass = `owf-${data.weather[0].id}`
-        weatherIcon.classList.add(owfClass)
-        temperature.textContent = `${Math.round(data.main.temp)}°C`
-        weatherDescription.textContent = data.weather[0].description
-        wind.textContent = `Wind speed: ${Math.round(data.wind.speed)} m/s`
-        humidity.textContent = `Humidity: ${data.main.humidity}%`
+const langObj = {
+    en: {
+        nigth: 'Good nigth',
+        morning: 'Good morning',
+        afternoon: 'Good afternoon',
+        evening: 'Good evening',
+        windSpeed: 'Wind speed',
+        units: 'm/s',
+        humidity: 'Humidity'
+    },
+    ru: {
+        nigth: 'Спокойной ночи',
+        morning: 'Доброе утро',
+        afternoon: 'Добрый день',
+        evening: 'Добрый вечер',
+        windSpeed: 'Скорость ветра',
+        units: 'м/с',
+        humidity: 'Влажность'
     }
 }
-
-getWeather()
-city.addEventListener('change', getWeather)
 
 //---------------------Quote of day--------------------------------
 
 let randomQuoteNum
-async function getQuotes() {  
-    const quotes = 'data.json'
+async function getQuotes() {
+    const quotes = language === 'en' ? 'data.json' : 'dataRu.json'
     const res = await fetch(quotes)
     const data = await res.json()
 
@@ -69,21 +77,48 @@ async function getQuotes() {
 
     quote.textContent = `"${data[randomQuoteNum]["text"]}"`
     author.textContent = data[randomQuoteNum]["author"]
-  }
-  getQuotes()
+}
 
 changeQuote.addEventListener ('click', getQuotes)
+
+//---------------------weather-----------------------------
+
+city.value = 'Minsk'
+let owfClass
+
+async function getWeather() {  
+    weatherIcon.className = 'weather-icon owf'
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=${language}&appid=91e0c5938a3b45ed4154661576da4ecf&units=metric`
+    const res = await fetch(url)
+    const data = await res.json()
+    
+    if (res.status === 404) { 
+        weatherIcon.classList.remove(owfClass)
+        temperature.textContent = `Error! City ${city.value} is not found.`
+        weatherDescription.textContent = ''
+    } else {
+        owfClass = `owf-${data.weather[0].id}`
+        weatherIcon.classList.add(owfClass)
+        temperature.textContent = `${Math.round(data.main.temp)}°C`
+        weatherDescription.textContent = data.weather[0].description
+        wind.textContent = `${langObj[language].windSpeed}: ${Math.round(data.wind.speed)} ${langObj[language].units}`
+        humidity.textContent = `${langObj[language].humidity}: ${data.main.humidity}%`
+    }
+}
+
+city.addEventListener('change', getWeather)
+
+
 
 //----------------------Clocks-----------------------
 let locales
 function showTime() {
     dateValue = new Date()
-    locales = 'en-US'
     let optionsForTime = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false}    
     let optionsForDate = { weekday: 'long', month: 'long', day: 'numeric'}
     
-    time.innerHTML = dateValue.toLocaleString(locales, optionsForTime)
-    date.innerHTML = dateValue.toLocaleString(locales, optionsForDate)
+    time.innerHTML = dateValue.toLocaleString(language, optionsForTime)
+    date.innerHTML = dateValue.toLocaleString(language, optionsForDate)
 
     setTimeout(showTime, 1000) 
 }
@@ -92,38 +127,63 @@ showTime()
 
 //---------------Greeting-------------------------
 
+let greetingText
 let timeOfDay
 function getTimeOfDay () { 
     const hours = dateValue.getHours()
     if (hours >= 0 && hours < 6) {
-        timeOfDay = "nigth"
+        greetingText = langObj[language].nigth
+        timeOfDay = 'nigth'
     } else if (hours >= 6 && hours < 12) {
-        timeOfDay = "morning"
+        greetingText = langObj[language].morning
+        timeOfDay = 'morning'
     } else if (hours >= 12 && hours < 18) {
-        timeOfDay = "afternoon"
+        greetingText = langObj[language].afternoon
+        timeOfDay = 'afternoon'
     } else {
-        timeOfDay = "evening"
-    }   
+        greetingText = langObj[language].evening
+        timeOfDay = 'evening'
+    }
+    greeting.textContent = greetingText   
     setTimeout(getTimeOfDay, 1000)
 }
 
 getTimeOfDay()
 
-greeting.textContent = `Good ${timeOfDay} `
 
-//---------------save user name----------------------------------
+
+//---------------save in local storage----------------------------------
 
 function setLocalStorage() {
     localStorage.setItem('name', userName.value)
-  }
+    localStorage.setItem('city', city.value)
+    localStorage.setItem('language', language)
+    
+}
 window.addEventListener('beforeunload', setLocalStorage)
 
 function getLocalStorage() {
   if(localStorage.getItem('name')) {
     userName.value = localStorage.getItem('name')
   }
+  if(localStorage.getItem('city')) {
+    city.value = localStorage.getItem('city')
+  }
+  if(localStorage.getItem('language')) {
+    language = localStorage.getItem('language')
+    langEn.checked = language === 'en'
+    langRu.checked = language === 'ru'
+  }
+  /* if(localStorage.getItem('inputEn')) {
+    console.log(Boolean(localStorage.getItem('inputEn')));
+    langEn.checked = Boolean(localStorage.getItem('inputEn'))
+  } */
 }
-window.addEventListener('load', getLocalStorage)
+window.addEventListener('load', () => {
+    getLocalStorage()
+    getWeather()
+    getQuotes()
+})
 
 //--------------------slider----------------------------------------
 
@@ -168,25 +228,23 @@ const audio = new Audio()
 let playNum = 0
 
 function playAudio() {
-  audio.src = playList[playNum].src
-  audio.currentTime = 0
-  if(!isPlay) {
-    audio.play()
-    isPlay = true
-  } else if (isPlay) 
-  {
-    audio.pause()
-    isPlay = false
-  }
-
+    audio.src = playList[playNum].src
+    audio.currentTime = 0
+    if(!isPlay) {
+        audio.play()
+        isPlay = true
+    } else if (isPlay) {
+        audio.pause()
+        isPlay = false
+    }
 }
 
 function togglePlayIcon() {
     if(!isPlay) {
         playBtn.classList.remove('pause')
-      } else {
+    } else {
         playBtn.classList.add('pause')
-      }
+    }
 }
 
 playBtn.addEventListener('click', playAudio)
@@ -227,11 +285,6 @@ playItems[playNum].classList.add('.item-active') */
 
 //-----------------settings menu-----------------------------------
 
-const settingsBtn = document.querySelector('.settings-icon')
-const settingsContainer = document.querySelector('.settings-container')
-const settingsMenu = document.querySelector('.settings-menu')
-
-
 settingsBtn.addEventListener('click', function() {
     settingsContainer.classList.toggle('settings-container-active')
     settingsBtn.classList.toggle('settings-icon-active')
@@ -244,6 +297,25 @@ settingsBtn.addEventListener('click', function() {
     } 
 })
 
+//---------toggle lang-----------------
+
+langEnBtn.addEventListener('click', function(){
+    if (langEn.checked === true && language !== "en") {
+        language = "en"
+        getWeather()
+        getQuotes()
+    }
+})
+
+langRuBtn.addEventListener('click', function(){
+    if (langRu.checked === true && language !== "ru") {
+        language = "ru"
+        getWeather()
+        getQuotes()
+    }
+})
+
+
 //---------show blocks----------------------------
 function getShow (block) {
     if (block.classList.contains('hidden')) {
@@ -251,8 +323,8 @@ function getShow (block) {
         setTimeout(function () {
             block.classList.remove('visuallyhidden')
         }, 20)
-      } else {
-        block.classList.add('visuallyhidden');   
+    } else {
+        block.classList.add('visuallyhidden')  
         block.addEventListener('transitionend', function() {
             block.classList.add('hidden')
         }, {
@@ -260,30 +332,28 @@ function getShow (block) {
           once: true,
           passive: false
         })
-      }
+    }
 }
 
 document.getElementById('show-player-btn').addEventListener('click', function() {
     this.classList.toggle('switch-on')
     getShow(player)
-    }, false)
+})
 
 document.getElementById('show-weather-btn').addEventListener('click', function() {
     this.classList.toggle('switch-on')
     getShow(weather)
-    }, false)
+})
 
 document.getElementById('show-greeting-btn').addEventListener('click', function() {
     this.classList.toggle('switch-on')
     getShow(greetingContainer)
-    }, false)
-
-
+})
     
 document.getElementById('show-clocks-btn').addEventListener('click', function() {
     this.classList.toggle('switch-on')
     getShow(time)
-}, false)
+})
 
 document.getElementById('show-date-btn').addEventListener('click', function() {
     this.classList.toggle('switch-on')
@@ -296,3 +366,4 @@ document.getElementById('show-quote-btn').addEventListener('click', function() {
     getShow(author)
     getShow(changeQuote)
 })
+

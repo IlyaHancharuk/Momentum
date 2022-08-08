@@ -351,18 +351,18 @@ body {
 	user-select: none;   
 }
  
-.lang-toggler .item-1 label {
+.lang-toggler .item-en label {
 	border-radius: 6px 0 0 6px;
 }
-.lang-toggler .item-2 label {
+.lang-toggler .item-ru label {
 	border-radius: 0 6px 6px 0;
 	border-right: 1px solid #999;
 }
 
-.lang-toggler .item-1 input[type=radio]:checked + label {
+.lang-toggler .item-en input[type=radio]:checked + label {
 	background: #24db24;
 }
-.lang-toggler .item-2 input[type=radio]:checked + label {
+.lang-toggler .item-ru input[type=radio]:checked + label {
 	background: #24db24;
 }
 
