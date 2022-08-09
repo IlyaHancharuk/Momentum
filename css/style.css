@@ -39,7 +39,7 @@ body {
 .change-quote,
 .quote,
 .author {
-  transition: opacity 0.5s ease;
+  transition: all 0.7s ease;
 }
 
 .player-controls {
@@ -405,12 +405,18 @@ body {
   background: #24db24;
 }
 
-.hidden {
+/* .hidden {
   display: none;
 }
 .visuallyhidden {
   opacity: 0;
+} */
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
 }
+
 
 .change-quote {
   margin-bottom: 30px;

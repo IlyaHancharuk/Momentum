@@ -36,12 +36,22 @@ let language = 'en'
 
 let dateValue = new Date()
 
-/* const state = {
-    : '',
-    ity: 'Minsk',
-    userName: '',
-} */
+let showBlock = {
+    player: 1,
+    weather: 1,
+    time: 1,
+    date: 1,
+    greeting: 1,
+    quote: 1
+}
 
+function f (block) {
+    if (showBlock.block === 0) {
+        block.classList.add('hidden')
+    } else {
+        block.classList.remove('hidden')
+    }
+}
 
 const langObj = {
     en: {
@@ -51,7 +61,8 @@ const langObj = {
         evening: 'Good evening',
         windSpeed: 'Wind speed',
         units: 'm/s',
-        humidity: 'Humidity'
+        humidity: 'Humidity',
+        namePlaceholder: '[Enter name]'
     },
     ru: {
         nigth: 'Спокойной ночи',
@@ -60,7 +71,8 @@ const langObj = {
         evening: 'Добрый вечер',
         windSpeed: 'Скорость ветра',
         units: 'м/с',
-        humidity: 'Влажность'
+        humidity: 'Влажность',
+        namePlaceholder: '[Введите имя]'
     }
 }
 
@@ -158,26 +170,30 @@ function setLocalStorage() {
     localStorage.setItem('name', userName.value)
     localStorage.setItem('city', city.value)
     localStorage.setItem('language', language)
+    localStorage.setItem('showBlock', JSON.stringify(showBlock))
     
 }
 window.addEventListener('beforeunload', setLocalStorage)
-
+console.log(JSON.stringify(showBlock));
 function getLocalStorage() {
   if(localStorage.getItem('name')) {
     userName.value = localStorage.getItem('name')
   }
+
   if(localStorage.getItem('city')) {
     city.value = localStorage.getItem('city')
   }
+
   if(localStorage.getItem('language')) {
     language = localStorage.getItem('language')
     langEn.checked = language === 'en'
     langRu.checked = language === 'ru'
   }
-  /* if(localStorage.getItem('inputEn')) {
-    console.log(Boolean(localStorage.getItem('inputEn')));
-    langEn.checked = Boolean(localStorage.getItem('inputEn'))
-  } */
+
+  if(localStorage.getItem('showBlock')) {
+    showBlock = JSON.parse(localStorage.getItem('showBlock'))
+    console.log(showBlock);
+  }
 }
 window.addEventListener('load', () => {
     getLocalStorage()
@@ -304,6 +320,7 @@ langEnBtn.addEventListener('click', function(){
         language = "en"
         getWeather()
         getQuotes()
+        userName.placeholder = langObj[language].namePlaceholder
     }
 })
 
@@ -312,27 +329,14 @@ langRuBtn.addEventListener('click', function(){
         language = "ru"
         getWeather()
         getQuotes()
+        userName.placeholder = langObj[language].namePlaceholder
     }
 })
 
 
 //---------show blocks----------------------------
 function getShow (block) {
-    if (block.classList.contains('hidden')) {
-        block.classList.remove('hidden')
-        setTimeout(function () {
-            block.classList.remove('visuallyhidden')
-        }, 20)
-    } else {
-        block.classList.add('visuallyhidden')  
-        block.addEventListener('transitionend', function() {
-            block.classList.add('hidden')
-        }, {
-          capture: false,
-          once: true,
-          passive: false
-        })
-    }
+    block.classList.toggle('hidden')
 }
 
 document.getElementById('show-player-btn').addEventListener('click', function() {
