@@ -30,6 +30,8 @@ const langRu = document.getElementById('langRu')
 const settingsBtn = document.querySelector('.settings-icon')
 const settingsContainer = document.querySelector('.settings-container')
 const settingsMenu = document.querySelector('.settings-menu')
+const form = document.getElementById('backgroung-source')
+const tagsInInput = document.querySelector('.tags-input')
 
 let isPlay = false
 let language = 'en'
@@ -62,7 +64,17 @@ const langObj = {
         windSpeed: 'Wind speed',
         units: 'm/s',
         humidity: 'Humidity',
-        namePlaceholder: '[Enter name]'
+        namePlaceholder: '[Enter name]',
+        tagPlaceholder: 'enter tag...',
+        language: 'Language',
+        player: 'Player',
+        weather: 'Weather',
+        clocks: 'Clocks',
+        date: 'Date',
+        greeting: 'Greeting',
+        quote: 'Quote',
+        source: 'Source images'
+
     },
     ru: {
         nigth: 'Спокойной ночи',
@@ -72,7 +84,16 @@ const langObj = {
         windSpeed: 'Скорость ветра',
         units: 'м/с',
         humidity: 'Влажность',
-        namePlaceholder: '[Введите имя]'
+        namePlaceholder: '[Введите имя]',
+        tagPlaceholder: 'введите тэг...',
+        language: 'Язык',
+        player: 'Плеер',
+        weather: 'Погода',
+        clocks: 'Часы',
+        date: 'Дата',
+        greeting: 'Приветствие',
+        quote: 'Цитата',
+        source: 'Источник изображения'
     }
 }
 
@@ -174,7 +195,6 @@ function setLocalStorage() {
     
 }
 window.addEventListener('beforeunload', setLocalStorage)
-console.log(JSON.stringify(showBlock));
 function getLocalStorage() {
   if(localStorage.getItem('name')) {
     userName.value = localStorage.getItem('name')
@@ -192,30 +212,31 @@ function getLocalStorage() {
 
   if(localStorage.getItem('showBlock')) {
     showBlock = JSON.parse(localStorage.getItem('showBlock'))
-    console.log(showBlock);
   }
 }
 window.addEventListener('load', () => {
     getLocalStorage()
     getWeather()
     getQuotes()
+    getTranslateSettings()
+    getTimeOfDay()
 })
 
 //--------------------slider----------------------------------------
 
 let randomNum
-
+let bgUrl
 let getRandomNum = () => randomNum = Math.floor(Math.random() * 20 + 1)
 getRandomNum()
 
 function setBg() { 
     let bgNum = String(randomNum).padStart(2, '0')
-    const img = new Image();
+    const img = new Image()
     img.src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
-    let bgUrl = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
+    bgUrl = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`
     img.onload = () => {      
         body.style.backgroundImage = `url("${bgUrl}")`
-      }
+    }
 }
 setBg()
 
@@ -235,9 +256,81 @@ function getSlidePrev() {
     setBg()
 }
 
-slidePrev.addEventListener('click', getSlidePrev)
-slideNext.addEventListener('click', getSlideNext)
+slidePrev.addEventListener('click', function() {
+    if (sourceImg === 'unsplash') {
+        getLinkToImageInUnsp()
+    } else if (sourceImg === 'flickr') {
+        getLinkToImageInFlic()
+    } else {
+        getSlidePrev()
+    }
+})
 
+slideNext.addEventListener('click', function() {
+    if (sourceImg === 'unsplash') {
+        getLinkToImageInUnsp()
+    } else if (sourceImg === 'flickr') {
+        getLinkToImageInFlic()
+    } else {
+        getSlideNext()
+    }
+})
+
+//---------------------image from API---------------------------
+async function getLinkToImageInUnsp () {
+    let url = `https://api.unsplash.com/photos/random?orientation=landscape&query=${tags}&client_id=fg6V1-FMUyFtFJVmMEUrCgYssfrcB9wmCcyURszY4qQ`
+    const res = await fetch(url)
+    const data = await res.json()
+    bgUrl = data.urls.regular
+    const img = new Image()
+    img.src = data.urls.regular
+    img.onload = () => {      
+        body.style.backgroundImage = `url("${bgUrl}")`
+    }
+}
+
+let randomImgNum
+async function getLinkToImageInFlic () {
+    let url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=47ed8b2c0859449bef5f83556459af46&tags=${tags}&extras=url_h&format=json&nojsoncallback=1`
+    const res = await fetch(url)
+    const data = await res.json()
+
+    randomImgNum = Math.floor(Math.random() * 100)
+    console.log(randomImgNum);
+    bgUrl = data.photos.photo[randomImgNum].url_h
+    const img = new Image()
+    img.src = data.photos.photo[randomImgNum].url_h
+    img.onload = () => {      
+        body.style.backgroundImage = `url("${bgUrl}")`
+    }
+}
+
+
+let sourceImg
+
+addEventListener('change', function() {
+    sourceImg = form.value
+    if (sourceImg === 'github') {
+        tagsInInput.disabled = true
+        tagsInInput.hidden = true
+        setBg()
+    } else if (sourceImg === 'unsplash') {
+        tagsInInput.disabled = false
+        tagsInInput.hidden = false
+        getLinkToImageInUnsp()
+        
+    } else if (sourceImg === 'flickr') {
+        tagsInInput.disabled = false
+        tagsInInput.hidden = false
+        getLinkToImageInFlic()
+    }
+})
+
+
+let tags = timeOfDay
+addEventListener('change', function() {
+    tags = tagsInInput.value
+})
 //-------------------Audio player-----------------------------------------------
 
 const audio = new Audio()
@@ -315,12 +408,28 @@ settingsBtn.addEventListener('click', function() {
 
 //---------toggle lang-----------------
 
+function getTranslateSettings() {
+    document.querySelector('.language-text').innerHTML = langObj[language].language
+    document.querySelector('.player-text').innerHTML = langObj[language].player
+    document.querySelector('.weather-text').innerHTML = langObj[language].weather
+    document.querySelector('.clocks-text').innerHTML = langObj[language].clocks
+    document.querySelector('.date-text').innerHTML = langObj[language].date
+    document.querySelector('.greeting-text').innerHTML = langObj[language].greeting
+    document.querySelector('.quote-text').innerHTML = langObj[language].quote
+    document.querySelector('.source-image-text').innerHTML = langObj[language].source
+}
+
+
 langEnBtn.addEventListener('click', function(){
     if (langEn.checked === true && language !== "en") {
         language = "en"
         getWeather()
         getQuotes()
+        getTimeOfDay()
+        showTime()
         userName.placeholder = langObj[language].namePlaceholder
+        tagsInInput.placeholder = langObj[language].tagPlaceholder
+        getTranslateSettings()
     }
 })
 
@@ -329,9 +438,14 @@ langRuBtn.addEventListener('click', function(){
         language = "ru"
         getWeather()
         getQuotes()
+        getTimeOfDay()
+        showTime()
         userName.placeholder = langObj[language].namePlaceholder
+        tagsInInput.placeholder = langObj[language].tagPlaceholder
+        getTranslateSettings()
     }
 })
+
 
 
 //---------show blocks----------------------------
@@ -370,4 +484,6 @@ document.getElementById('show-quote-btn').addEventListener('click', function() {
     getShow(author)
     getShow(changeQuote)
 })
+
+
 

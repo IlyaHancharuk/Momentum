@@ -298,8 +298,8 @@ body {
 }
 
 .settings-container-active {
-  width: 300px;
-  height: 400px;
+  width: 380px;
+  height: 440px;
   left: 20px;
   bottom: 50px;
   transform: translate3d(0, 0, 0) scale(1);
@@ -327,6 +327,44 @@ body {
   border-bottom: 1px solid #999
 }
 
+.toggler-source {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+}
+
+.toggler-source select,
+.tags-input {
+  max-width: 140px;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.toggler-source select {
+  padding: 4px 5px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  box-shadow: inset 0 0 7px 0 #999;
+  
+}
+
+.tags-input {
+  border: none;
+  border-bottom: 1px solid #999;
+  padding: 5px;
+  border-radius: 7px;
+}
+
+.tags-input:disabled {
+  background-color: rgba(255, 255, 255, 0.0);
+}
+
+
+.toggler-source select:focus,
+.tags-input:focus {
+  outline: none;
+}
 
 /* переключатель языка */
 
@@ -405,18 +443,10 @@ body {
   background: #24db24;
 }
 
-/* .hidden {
-  display: none;
-}
-.visuallyhidden {
-  opacity: 0;
-} */
-
 .hidden {
   visibility: hidden;
   opacity: 0;
 }
-
 
 .change-quote {
   margin-bottom: 30px;

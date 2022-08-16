@@ -48,7 +48,7 @@
     <div class="settings-container">
       <ul class="settings-menu">
         <li>
-          <div>Language</div>
+          <div class="language-text">Language</div>
           <div class="lang-toggler">
             <div class="lang-toggler-item item-en">
                 <input id="langEn" type="radio" name="radio" value="En" checked>
@@ -61,28 +61,43 @@
         </div>
         </li>
         <li>
-          <div>Player</div>
+          <div class="player-text">Player</div>
           <div class="switch-btn switch-on" id="show-player-btn"></div>
         </li>
         <li>
-          <div>Weather</div>
+          <div class="weather-text">Weather</div>
           <div class="switch-btn switch-on" id="show-weather-btn"></div>
         </li>
         <li>
-          <div>Clocks</div>
+          <div class="clocks-text">Clocks</div>
           <div class="switch-btn switch-on" id="show-clocks-btn"></div>
         </li>
         <li>
-          <div>Date</div>
+          <div class="date-text">Date</div>
           <div class="switch-btn switch-on" id="show-date-btn"></div>
         </li>
         <li>
-          <div>Greeting</div>
+          <div class="greeting-text">Greeting</div>
           <div class="switch-btn switch-on" id="show-greeting-btn"></div>
         </li>
         <li>
-          <div>Quote</div>
+          <div class="quote-text">Quote</div>
           <div class="switch-btn switch-on" id="show-quote-btn"></div>
+        </li>
+        <li>
+            <label for="backgroung-source" class="source-image-text">
+              Source images
+            </label>
+            <form class="toggler-source">
+              <select name="backgroung-source" id="backgroung-source">
+                <option value="github">GitHub</option>
+                <option value="unsplash">Unsplash API</option>
+                <option value="flickr">Flickr API</option>
+              </select>
+              <div>
+                <input class="tags-input" type="text" placeholder="enter tags..." disabled hidden>
+              </div>
+            </form>
         </li>
       </ul>
     </div>
